@@ -108,9 +108,7 @@ const main = async () => {
 
     const input = getCommandLineInput()
 
-    const browser = await puppeteer.launch({
-        headless: true
-    });
+    const browser = await puppeteer.launch()
 
     console.log('Logging in')
     await login(browser, input.email, input.password)
