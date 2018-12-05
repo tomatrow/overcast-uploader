@@ -55,13 +55,14 @@ const uploadFiles = async (browser, filePaths) => {
 
     await page.goto('https://overcast.fm/uploads')
 
-    // check we are passed audio files
-    const isAudioFile = filePath => allowedExtensions
-        .map(ext => filePath.endsWith(`.${ext}`))
-        .reduce((last, next) => last || next)
     filePaths.forEach(filePath => {
-        if (isAudioFile(filePath))
+        // check we are passed audio files
+        const isAllowedAudioFile = allowedExtensions
+            .map(ext => filePath.endsWith(`.${ext}`))
+            .reduce((last, next) => last || next)
+        if (isAllowedAudioFile)
             return;
+
         console.error(`Unrecognized file type: ${filePath}`)
         process.exit(1)
     })
