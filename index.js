@@ -63,18 +63,23 @@ const uploadFile = async (filePath, page) => {
 }
 
 // uploads all our files
-const uploadFiles = async (browser, uploadDir) => {
+const uploadFiles = async (browser, filePaths) => {
     const page = await browser.newPage()
 
     await page.goto('https://overcast.fm/uploads')
 
-    // upload all the files
-    const filePaths = readRelativeFilePaths(uploadDir)
-        .filter(filePath => allowedExtensions
-            .map(ext => filePath.endsWith(`.${ext}`))
-            .reduce((last, next) => last || next)
-        )
+    // check we are passed audio files
+    const isAudioFile = filePath => allowedExtensions
+        .map(ext => filePath.endsWith(`.${ext}`))
+        .reduce((last, next) => last || next)
+    filePaths.forEach(filePath => {
+        if (isAudioFile(filePath))
+            return;
+        console.error(`Unrecognized file type: ${filePath}`)
+        process.exit(1)
+    })
 
+    // upload the files
     for (filePath of filePaths) {
         process.stdout.write(`uploading: '${filePath}'...`)
         await uploadFile(filePath, page)
@@ -84,13 +89,13 @@ const uploadFiles = async (browser, uploadDir) => {
 
 // parse commandline arguments
 const getCommandLineInput = () => {
-    let uploadFolder;
+    let files;
     program
         .name('overcast-uploader')
-        .usage('--email <email> --password <password> <folder>')
-        .arguments('<folder>')
-        .action(folder => {
-            uploadFolder = folder
+        .usage('--email <email> --password <password> <file> [otherFiles...]')
+        .arguments('<file> [otherFiles...]')
+        .action((file, otherFiles) => {
+            files = [file].concat(otherFiles)
         })
         .option('-e, --email <email>', 'Overcast account email')
         .option('-p, --password <password>', 'Overcast account password')
@@ -100,7 +105,7 @@ const getCommandLineInput = () => {
     const result = {
         username: program.email,
         password: program.password,
-        directory: uploadFolder
+        files
     }
 
     // validate
@@ -125,7 +130,7 @@ const main = async () => {
     await login(browser, input.username, input.password)
     console.log('Logged in')
     console.log('Starting uploads')
-    await uploadFiles(browser, input.directory)
+    await uploadFiles(browser, input.files)
     console.log('Finished uploads')
     await browser.close()
 };
