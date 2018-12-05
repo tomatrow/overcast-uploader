@@ -113,7 +113,6 @@ const getCommandLineInput = () => {
         if (typeof result[key] === 'undefined')
             program.help()
 
-
     return result
 }
 
