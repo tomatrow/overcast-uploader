@@ -11,13 +11,13 @@ const allowedExtensions = ['mp3', 'm4a', 'm4b', 'aac']
 const timeoutMin = 30 // minutes
 
 // login to Overcast
-const login = async (browser, username, password) => {
+const login = async (browser, email, password) => {
     const page = await browser.newPage();
 
     await page.goto('https://overcast.fm/login');
 
     // type in email
-    await page.type('#email', username)
+    await page.type('#email', email)
 
     // type in password
     await page.type('#password', password)
@@ -103,7 +103,7 @@ const getCommandLineInput = () => {
 
     // construct input object
     const result = {
-        username: program.email,
+        email: program.email,
         password: program.password,
         files
     }
@@ -126,7 +126,7 @@ const main = async () => {
     });
 
     console.log('Logging in')
-    await login(browser, input.username, input.password)
+    await login(browser, input.email, input.password)
     console.log('Logged in')
     console.log('Starting uploads')
     await uploadFiles(browser, input.files)
