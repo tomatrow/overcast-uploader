@@ -54,7 +54,7 @@ const uploadFile = async (filePath, page) => {
             return !!input && !input.disabled
         }, {
             // wait till the upload button is enabled
-            timeout: timeoutMin * 60 * 1000 // half an hour in miliseconds
+            timeout: timeoutMin * 60 * 1000 // in miliseconds
         }, inputSelector)
         .catch(() => {
             const msg = `Upload of ${filePath} exceeded ${timeoutMin}min`
