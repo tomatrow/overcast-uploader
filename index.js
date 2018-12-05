@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const tool = require('command-line-tool')
+const program = require('commander')
 const puppeteer = require('puppeteer');
 const path = require('path')
 const fs = require('fs');
@@ -82,42 +82,50 @@ const uploadFiles = async (browser, uploadDir) => {
     }
 }
 
-const getCommandLineOptions = optionNames => {
+// parse commandline arguments
+const getCommandLineInput = () => {
+    let uploadFolder;
+    program
+        .name('overcast-uploader')
+        .usage('--email <email> --password <password> <folder>')
+        .arguments('<folder>')
+        .action(folder => {
+            uploadFolder = folder
+        })
+        .option('-e, --email <email>', 'Overcast account email')
+        .option('-p, --password <password>', 'Overcast account password')
+        .parse(process.argv)
 
-    const definitions = optionNames
-        .map(x => ({
-            name: x
-        }));
-
-    // parse options
-    const {
-        options
-    } = tool.getCli(definitions);
+    // construct input object
+    const result = {
+        username: program.email,
+        password: program.password,
+        directory: uploadFolder
+    }
 
     // validate
-    optionNames.forEach(key => {
-        if (!options[key])
-            throw new Error(`Missing argument '${key}'`)
-    })
+    for (const key in result)
+        if (typeof result[key] === 'undefined')
+            program.help()
 
-    return options
+
+    return result
 }
 
 // the main logic
 const main = async () => {
 
-    const optionNames = ['username', 'password', 'directory']
-    const options = getCommandLineOptions(optionNames)
+    const input = getCommandLineInput()
 
     const browser = await puppeteer.launch({
         headless: true
     });
 
     console.log('Logging in')
-    await login(browser, options.username, options.password)
+    await login(browser, input.username, input.password)
     console.log('Logged in')
     console.log('Starting uploads')
-    await uploadFiles(browser, options.directory)
+    await uploadFiles(browser, input.directory)
     console.log('Finished uploads')
     await browser.close()
 };

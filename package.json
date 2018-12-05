@@ -4,7 +4,7 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "start": "node index.js --username $OVERCAST_UPLOADER_USERNAME --password $OVERCAST_UPLOADER_PASSWORD --directory 'toupload'"
+        "start": "node index.js --email $OVERCAST_UPLOADER_USERNAME --password $OVERCAST_UPLOADER_PASSWORD 'toupload'"
     },
     "author": "AJ Caldwell",
     "license": "ISC",
@@ -12,7 +12,7 @@
         "overcast-uploader": "./index.js"
     },
     "dependencies": {
-        "command-line-tool": "^0.8.0",
+        "commander": "^2.19.0",
         "puppeteer": "^1.10.0"
     }
 }
