@@ -29,19 +29,6 @@ const login = async (browser, email, password) => {
     return page.waitForNavigation()
 }
 
-// get the files we need to upload
-const readRelativeFilePaths = uploadDir => {
-
-    // get the relative path for our upload directory
-    const absolutePath = path.join(__dirname, uploadDir)
-    const cwd = process.cwd()
-    const relativeUploadPath = path.relative(cwd, absolutePath)
-
-    // return the relative paths of the files we need to upload
-    return fs.readdirSync(relativeUploadPath)
-        .map(fileName => path.join(relativeUploadPath, fileName))
-}
-
 // uploads a single file
 const uploadFile = async (filePath, page) => {
     // start uploading the file
