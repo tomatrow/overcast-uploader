@@ -34,7 +34,7 @@ const uploadFile = async (filePath, page) => {
     // start uploading the file
     const inputSelector = 'input#upload_file'
     const input = await page.$(inputSelector)
-    await input.uploadFile(filePath) //
+    await input.uploadFile(filePath)
 
     return page.waitForFunction(selector => {
             const input = document.querySelector(selector)
