@@ -9,7 +9,7 @@ Clone and run `npm install` and then `npm link`.
 Note, we assume the happy path: valid login info, no server issues, and known page structure.
 
 ```shell
-overcast-uploader --username 'me@example.com' --password 'pass' --directory 'location/of/audio/files/'
+overcast-uploader --email <email> --password <password> <file> [otherFiles...]
 ```
 
 ## Todo
